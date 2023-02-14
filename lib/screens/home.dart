@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:golf_cart_driver/helpers/constants.dart';
 import 'package:golf_cart_driver/helpers/stars_method.dart';
 import 'package:golf_cart_driver/screens/ride_request.dart';
+import 'package:golf_cart_driver/services/push_notifications.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import "package:google_maps_webservice/places.dart";
@@ -58,6 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     AppStateProvider appState = Provider.of<AppStateProvider>(context);
+    appState.onNewRequest();
     //appState.listenToRequest(context: context ,id: )
     print("i§m here ---------------- ${appState.show}");
     UserProvider userProvider = Provider.of<UserProvider>(context);

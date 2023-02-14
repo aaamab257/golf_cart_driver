@@ -22,8 +22,7 @@ class _RideRequestScreenState extends State<RideRequestScreen> {
     super.initState();
     AppStateProvider _state =
         Provider.of<AppStateProvider>(context, listen: false);
-    _state.listenToRequest(
-        id: "da134a30-aa7b-11ed-b217-593c8af457bd", context: context);
+    _state.listenToRequest(id: _state.rideRequestModel.id, context: context);
   }
 
   @override
@@ -51,40 +50,44 @@ class _RideRequestScreenState extends State<RideRequestScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(40)),
-                  child: CircleAvatar(
-                    backgroundColor: Colors.transparent,
-                    radius: 45,
-                    child: Icon(
-                      Icons.person,
-                      size: 65,
-                      color: white,
+                if (appState.riderModel.photo == null)
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(40)),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      radius: 45,
+                      child: Icon(
+                        Icons.person,
+                        size: 65,
+                        color: white,
+                      ),
                     ),
                   ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                      color: Colors.deepOrange,
-                      borderRadius: BorderRadius.circular(40)),
-                  child: CircleAvatar(
-                    radius: 45,
-                    backgroundImage: NetworkImage('appState.riderModel?.photo'),
+                if (appState.riderModel.photo != null)
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.deepOrange,
+                        borderRadius: BorderRadius.circular(40)),
+                    child: CircleAvatar(
+                      radius: 45,
+                      backgroundImage: NetworkImage(appState.riderModel?.photo),
+                    ),
                   ),
-                ),
               ],
             ),
             SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CustomText(text: "Hind" ?? "Nada"),
+                CustomText(text: appState.riderModel?.name ?? "Nada"),
               ],
             ),
             SizedBox(height: 10),
-            stars(rating: 0, votes: 0),
+            stars(
+                rating: appState.riderModel.rating,
+                votes: appState.riderModel.votes),
             Divider(),
             ListTile(
               title: Row(
@@ -98,11 +101,12 @@ class _RideRequestScreenState extends State<RideRequestScreen> {
               ),
               subtitle: ElevatedButton.icon(
                   onPressed: () async {
-                    LatLng destinationCoordiates =
-                        LatLng(21.5799712, 39.1833948);
+                    LatLng destinationCoordiates = LatLng(
+                        appState.rideRequestModel.dLatitude,
+                        appState.rideRequestModel.dLongitude);
                     appState.addLocationMarker(
                         destinationCoordiates,
-                        " كلية التربية - فرع البنات" ?? "Nada",
+                        appState.rideRequestModel?.destination ?? "Nada",
                         "Destination Location");
                     showModalBottomSheet(
                         context: context,
@@ -128,7 +132,7 @@ class _RideRequestScreenState extends State<RideRequestScreen> {
                     Icons.location_on,
                   ),
                   label: CustomText(
-                    text: "كلية التربية - فرع البنات" ?? "Nada",
+                    text: appState.rideRequestModel?.destination ?? "Nada",
                     weight: FontWeight.bold,
                   )),
             ),
@@ -140,6 +144,11 @@ class _RideRequestScreenState extends State<RideRequestScreen> {
                     onPressed: null,
                     icon: Icon(Icons.flag),
                     label: Text('User is near by')),
+                ElevatedButton.icon(
+                    onPressed: null,
+                    icon: Icon(Icons.attach_money),
+                    label: Text(
+                        "${appState.rideRequestModel.distance.value / 500} ")),
               ],
             ),
             Divider(),
@@ -178,8 +187,8 @@ class _RideRequestScreenState extends State<RideRequestScreen> {
                       appState.clearMarkers();
 
                       appState.acceptRequest(
-                          requestId: "da134a30-aa7b-11ed-b217-593c8af457bd",
-                          driverId: "ct8Q8ND1qaRbrwKX51e4cDLeDpG2");
+                          requestId: appState.rideRequestModel.id,
+                          driverId: userProvider.userModel.id);
                       appState.changeWidgetShowed(showWidget: Show.RIDER);
                       appState.sendRequest(
                           coordinates:

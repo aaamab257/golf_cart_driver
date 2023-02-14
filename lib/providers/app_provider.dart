@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
@@ -48,7 +49,7 @@ class AppStateProvider with ChangeNotifier {
   SharedPreferences prefs;
 
   Location location = new Location();
-  bool hasNewRideRequest = true;
+  bool hasNewRideRequest = false;
   UserServices _userServices = UserServices();
   RideRequestModel rideRequestModel;
   RequestModelFirebase requestModelFirebase;
@@ -230,10 +231,16 @@ class AppStateProvider with ChangeNotifier {
     }
   }
 
-// ANCHOR PUSH NOTIFICATION METHODS
-  Future handleOnMessage(Map<String, dynamic> data) async {
-    await _handleNotificationData(data);
+  Future<void> onNewRequest() async {
+    HttpsCallable cal =
+        FirebaseFunctions.instance.httpsCallable('rideRequestNotification');
+    final response = await cal.call();
+    await _handleNotificationData(response.data);
+    print(response.data);
   }
+
+// ANCHOR PUSH NOTIFICATION METHODS
+  Future handleOnMessage(Map<String, dynamic> data) async {}
 
   Future handleOnLaunch(Map<String, dynamic> data) async {
     await _handleNotificationData(data);

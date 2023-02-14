@@ -39,7 +39,7 @@ class RiderWidget extends StatelessWidget {
                 ),
                 ListTile(
                   leading: Container(
-                    child: "+521152154" == null
+                    child: appState.riderModel?.phone == null
                         ? CircleAvatar(
                             radius: 30,
                             child: Icon(
@@ -50,7 +50,7 @@ class RiderWidget extends StatelessWidget {
                         : CircleAvatar(
                             radius: 30,
                             backgroundImage:
-                                NetworkImage("appState.riderModel?.photo"),
+                                NetworkImage(appState.riderModel?.photo),
                           ),
                   ),
                   title: Row(
@@ -59,11 +59,11 @@ class RiderWidget extends StatelessWidget {
                       RichText(
                           text: TextSpan(children: [
                         TextSpan(
-                            text: "Hind" + "\n",
+                            text: appState.riderModel.name + "\n",
                             style: TextStyle(
                                 fontSize: 17, fontWeight: FontWeight.bold)),
                         TextSpan(
-                            text: 'كلية التربية - فرع البنات"',
+                            text: appState.rideRequestModel?.destination,
                             style: TextStyle(
                                 fontSize: 14, fontWeight: FontWeight.w300)),
                       ], style: TextStyle(color: black))),
@@ -75,7 +75,7 @@ class RiderWidget extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20)),
                       child: IconButton(
                         onPressed: () {
-                          _service.call("5134561321");
+                          _service.call(appState.riderModel.phone);
                         },
                         icon: Icon(Icons.call),
                       )),
@@ -121,19 +121,19 @@ class RiderWidget extends StatelessWidget {
                     RichText(
                         text: TextSpan(children: [
                       TextSpan(
-                          text: "Pick up location \n",
+                          text: "\nPick up location \n",
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 16)),
                       TextSpan(
-                          text: "كلية حاسبات ومعلومات",
+                          text: "25th avenue, flutter street \n\n\n",
                           style: TextStyle(
                               fontWeight: FontWeight.w300, fontSize: 16)),
                       TextSpan(
-                          text: "\n Destination \n",
+                          text: "Destination \n",
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 16)),
                       TextSpan(
-                          text: "كلية التربية - فرع البنات",
+                          text: "${appState.rideRequestModel?.destination} \n",
                           style: TextStyle(
                               fontWeight: FontWeight.w300, fontSize: 16)),
                     ], style: TextStyle(color: black))),
