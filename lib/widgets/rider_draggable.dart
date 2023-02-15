@@ -39,27 +39,20 @@ class RiderWidget extends StatelessWidget {
                 ),
                 ListTile(
                   leading: Container(
-                    child: appState.riderModel?.phone == null
-                        ? CircleAvatar(
-                            radius: 30,
-                            child: Icon(
-                              Icons.person_outline,
-                              size: 25,
-                            ),
-                          )
-                        : CircleAvatar(
-                            radius: 30,
-                            backgroundImage:
-                                NetworkImage(appState.riderModel?.photo),
-                          ),
-                  ),
+                      child: CircleAvatar(
+                    radius: 30,
+                    child: Icon(
+                      Icons.person_outline,
+                      size: 25,
+                    ),
+                  )),
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       RichText(
                           text: TextSpan(children: [
                         TextSpan(
-                            text: appState.riderModel.name + "\n",
+                            text: "Hind" + "\n",
                             style: TextStyle(
                                 fontSize: 17, fontWeight: FontWeight.bold)),
                         TextSpan(
@@ -125,7 +118,7 @@ class RiderWidget extends StatelessWidget {
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 16)),
                       TextSpan(
-                          text: "25th avenue, flutter street \n\n\n",
+                          text: "كليه حاسبات ومعلومات \n",
                           style: TextStyle(
                               fontWeight: FontWeight.w300, fontSize: 16)),
                       TextSpan(
@@ -133,7 +126,8 @@ class RiderWidget extends StatelessWidget {
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 16)),
                       TextSpan(
-                          text: "${appState.rideRequestModel?.destination} \n",
+                          text:
+                              "كلية الآداب والعلوم الانسانية_ جامعة جدة، \n Jeddah Saudi Arabia \n",
                           style: TextStyle(
                               fontWeight: FontWeight.w300, fontSize: 16)),
                     ], style: TextStyle(color: black))),

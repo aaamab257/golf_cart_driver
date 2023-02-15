@@ -22,7 +22,8 @@ class _RideRequestScreenState extends State<RideRequestScreen> {
     super.initState();
     AppStateProvider _state =
         Provider.of<AppStateProvider>(context, listen: false);
-    _state.listenToRequest(id: _state.rideRequestModel.id, context: context);
+    _state.listenToRequest(
+        id: "1c6e8a70-ace8-11ed-9bb9-7b44632198a4", context: context);
   }
 
   @override
@@ -162,7 +163,7 @@ class _RideRequestScreenState extends State<RideRequestScreen> {
 
                     appState.acceptRequest(
                         requestId: "1c6e8a70-ace8-11ed-9bb9-7b44632198a4",
-                        driverId: userProvider.userModel.id);
+                        driverId: "RykuCkbnGiM8ToDFCw5jT589V0B3");
                     appState.changeWidgetShowed(showWidget: Show.RIDER);
                     appState.sendRequest(
                         coordinates:

@@ -37,10 +37,6 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     _deviceToken();
     _updatePosition();
-    FirebaseMessaging.instance.getInitialMessage();
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('new Message Here');
-    });
   }
 
   _deviceToken() async {
@@ -59,7 +55,9 @@ class _MyHomePageState extends State<MyHomePage> {
     UserProvider _user = Provider.of<UserProvider>(context, listen: false);
     AppStateProvider _app =
         Provider.of<AppStateProvider>(context, listen: false);
+
     _user.updateUserData({"id": _id, "position": _app.position.toJson()});
+    print('here');
   }
 
   @override

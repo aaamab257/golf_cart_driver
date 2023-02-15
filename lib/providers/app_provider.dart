@@ -288,7 +288,8 @@ class AppStateProvider with ChangeNotifier {
     print('_handleNotificationData');
     hasNewRideRequest = true;
     rideRequestModel = RideRequestModel.fromMap(data['data']);
-    riderModel = await _riderServices.getRiderById(rideRequestModel.userId);
+    riderModel =
+        await _riderServices.getRiderById("m1jnTvGAgCXKtV9k8BTeW0m2GNi1");
     notifyListeners();
   }
 
