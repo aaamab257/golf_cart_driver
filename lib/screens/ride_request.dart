@@ -146,10 +146,6 @@ class _RideRequestScreenState extends State<RideRequestScreen> {
                     onPressed: null,
                     icon: Icon(Icons.flag),
                     label: Text('User is near by')),
-                ElevatedButton.icon(
-                    onPressed: null,
-                    icon: Icon(Icons.attach_money),
-                    label: Text("${6519 / 500} ")),
               ],
             ),
             Divider(),

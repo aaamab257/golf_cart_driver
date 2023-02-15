@@ -137,9 +137,11 @@ class RiderWidget extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(12),
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      appState.hasNewRideRequest = false;
+                    },
                     child: CustomText(
-                      text: "Cancel Ride",
+                      text: "Finish Ride",
                       color: white,
                     ),
                   ),
