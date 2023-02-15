@@ -1,4 +1,6 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:golf_cart_driver/helpers/constants.dart';
 import 'package:golf_cart_driver/helpers/stars_method.dart';
 import 'package:golf_cart_driver/screens/ride_request.dart';
@@ -35,6 +37,10 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     _deviceToken();
     _updatePosition();
+    FirebaseMessaging.instance.getInitialMessage();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('new Message Here');
+    });
   }
 
   _deviceToken() async {
@@ -59,8 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     AppStateProvider appState = Provider.of<AppStateProvider>(context);
-    appState.onNewRequest();
-    //appState.listenToRequest(context: context ,id: )
+
     print("i§m here ---------------- ${appState.show}");
     UserProvider userProvider = Provider.of<UserProvider>(context);
     Widget home = SafeArea(

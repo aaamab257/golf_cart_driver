@@ -50,44 +50,43 @@ class _RideRequestScreenState extends State<RideRequestScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (appState.riderModel.photo == null)
-                  Container(
-                    decoration: BoxDecoration(
-                        color: Colors.grey.withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(40)),
-                    child: CircleAvatar(
-                      backgroundColor: Colors.transparent,
-                      radius: 45,
-                      child: Icon(
-                        Icons.person,
-                        size: 65,
-                        color: white,
-                      ),
+                Container(
+                  decoration: BoxDecoration(
+                      color: Colors.grey.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(40)),
+                  child: CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    radius: 45,
+                    child: Icon(
+                      Icons.person,
+                      size: 65,
+                      color: white,
                     ),
                   ),
-                if (appState.riderModel.photo != null)
-                  Container(
-                    decoration: BoxDecoration(
-                        color: Colors.deepOrange,
-                        borderRadius: BorderRadius.circular(40)),
-                    child: CircleAvatar(
-                      radius: 45,
-                      backgroundImage: NetworkImage(appState.riderModel?.photo),
-                    ),
-                  ),
+                ),
+                // if (appState.riderModel.photo == null)
+
+                // if (appState.riderModel.photo != null)
+                //   Container(
+                //     decoration: BoxDecoration(
+                //         color: Colors.deepOrange,
+                //         borderRadius: BorderRadius.circular(40)),
+                //     child: CircleAvatar(
+                //       radius: 45,
+                //       backgroundImage: NetworkImage(appState.riderModel?.photo),
+                //     ),
+                //   ),
               ],
             ),
             SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CustomText(text: appState.riderModel?.name ?? "Nada"),
+                CustomText(text: "Hind" ?? "Nada"),
               ],
             ),
             SizedBox(height: 10),
-            stars(
-                rating: appState.riderModel.rating,
-                votes: appState.riderModel.votes),
+            stars(rating: 5, votes: 5),
             Divider(),
             ListTile(
               title: Row(
@@ -101,12 +100,12 @@ class _RideRequestScreenState extends State<RideRequestScreen> {
               ),
               subtitle: ElevatedButton.icon(
                   onPressed: () async {
-                    LatLng destinationCoordiates = LatLng(
-                        appState.rideRequestModel.dLatitude,
-                        appState.rideRequestModel.dLongitude);
+                    LatLng destinationCoordiates =
+                        LatLng(21.5777381, 39.1828419);
                     appState.addLocationMarker(
                         destinationCoordiates,
-                        appState.rideRequestModel?.destination ?? "Nada",
+                        "كلية الآداب والعلوم الانسانية_ جامعة جدة، Jeddah Saudi Arabia" ??
+                            "Nada",
                         "Destination Location");
                     showModalBottomSheet(
                         context: context,
@@ -132,7 +131,9 @@ class _RideRequestScreenState extends State<RideRequestScreen> {
                     Icons.location_on,
                   ),
                   label: CustomText(
-                    text: appState.rideRequestModel?.destination ?? "Nada",
+                    text:
+                        "كلية الآداب والعلوم الانسانية_ جامعة جدة، Jeddah Saudi Arabia" ??
+                            "Nada",
                     weight: FontWeight.bold,
                   )),
             ),
@@ -147,8 +148,7 @@ class _RideRequestScreenState extends State<RideRequestScreen> {
                 ElevatedButton.icon(
                     onPressed: null,
                     icon: Icon(Icons.attach_money),
-                    label: Text(
-                        "${appState.rideRequestModel.distance.value / 500} ")),
+                    label: Text("${6519 / 500} ")),
               ],
             ),
             Divider(),
@@ -158,42 +158,51 @@ class _RideRequestScreenState extends State<RideRequestScreen> {
                 CustomBtn(
                   text: "Accept",
                   onTap: () async {
-                    if (appState.requestModelFirebase.status != "pending") {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return Dialog(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      20.0)), //this right here
-                              child: Container(
-                                height: 200,
-                                child: Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        CustomText(
-                                            text: "Sorry! Request Expired")
-                                      ],
-                                    )),
-                              ),
-                            );
-                          });
-                    } else {
-                      appState.clearMarkers();
+                    appState.clearMarkers();
 
-                      appState.acceptRequest(
-                          requestId: appState.rideRequestModel.id,
-                          driverId: userProvider.userModel.id);
-                      appState.changeWidgetShowed(showWidget: Show.RIDER);
-                      appState.sendRequest(
-                          coordinates:
-                              appState.requestModelFirebase.getCoordinates());
-                    }
+                    appState.acceptRequest(
+                        requestId: "1c6e8a70-ace8-11ed-9bb9-7b44632198a4",
+                        driverId: userProvider.userModel.id);
+                    appState.changeWidgetShowed(showWidget: Show.RIDER);
+                    appState.sendRequest(
+                        coordinates:
+                            appState.requestModelFirebase.getCoordinates());
+                    // if (appState.requestModelFirebase.status != "pending") {
+                    //   showDialog(
+                    //       context: context,
+                    //       builder: (BuildContext context) {
+                    //         return Dialog(
+                    //           shape: RoundedRectangleBorder(
+                    //               borderRadius: BorderRadius.circular(
+                    //                   20.0)), //this right here
+                    //           child: Container(
+                    //             height: 200,
+                    //             child: Padding(
+                    //                 padding: const EdgeInsets.all(12.0),
+                    //                 child: Column(
+                    //                   mainAxisAlignment:
+                    //                       MainAxisAlignment.center,
+                    //                   crossAxisAlignment:
+                    //                       CrossAxisAlignment.start,
+                    //                   children: [
+                    //                     CustomText(
+                    //                         text: "Sorry! Request Expired")
+                    //                   ],
+                    //                 )),
+                    //           ),
+                    //         );
+                    //       });
+                    // } else {
+                    //   appState.clearMarkers();
+
+                    //   appState.acceptRequest(
+                    //       requestId: appState.rideRequestModel.id,
+                    //       driverId: userProvider.userModel.id);
+                    //   appState.changeWidgetShowed(showWidget: Show.RIDER);
+                    //   appState.sendRequest(
+                    //       coordinates:
+                    //           appState.requestModelFirebase.getCoordinates());
+                    // }
                   },
                   bgColor: green,
                   shadowColor: Colors.greenAccent,

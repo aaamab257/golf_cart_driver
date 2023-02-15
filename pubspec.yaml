@@ -54,6 +54,7 @@ dependencies:
   percent_indicator: ^4.2.2
   google_maps_webservice: null
   geocoder: null
+  flutter_local_notifications: ^13.0.0
   
 dependency_overrides:
     firebase_core_platform_interface: 4.5.1

@@ -1,7 +1,7 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 
-admin.initializeApp();
+admin.initializeApp(functions.config().firebase);
 const fcm = admin.messaging();
 const db = admin.firestore();
 export const locationReachedNotification =
@@ -93,19 +93,23 @@ export const rideAcceptedNotification = functions.firestore.
 
 export const rideRequestNotification = functions.firestore
     .document("requests/{requestId}").onCreate(
-        async (snapshot) => {
+        async (snapshot, context) => {
           const rideRequet = snapshot.data();
 
           const tokens: string[] = [];
 
-          const drivers = await db.collection("drivers").get();
-
-          drivers.forEach((document) => {
-            console.log("DATA: ${document.data().token}");
-
-            tokens.push(document.data().token);
+          admin.firestore().collection("drivers").get().then((snapshot) => {
+            if (snapshot.empty) {
+              console.log("No Devices");
+            } else {
+              for (const pushTokens of snapshot.docs) {
+                tokens.push(pushTokens.data().token);
+              }
+            }
           });
-          const payload: admin.messaging.MessagingPayload = {
+
+
+          const payload = {
             notification: {
               title: "Ride request",
               body: "${rideRequet.username}to${rideRequet.destination.address}",
@@ -131,6 +135,10 @@ export const rideRequestNotification = functions.firestore
 
           console.log(`NUMBER OF TOKENS IS: ${tokens.length}`);
 
-          return fcm.sendToDevice(tokens, payload);
+          const options = {
+            priority: "high",
+            timeToLive: 60 * 60 * 24,
+          };
+          return admin.messaging().sendToDevice(tokens, payload, options);
         }
     );

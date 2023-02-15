@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.golf_cart_driver">
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="golf_cart_driver"
         android:name="${applicationName}"
@@ -20,6 +21,9 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
+              <meta-data 
+               android:name="com.google.firebase.messaging.default_notification_icon"
+               android:resource="@drawable/app_icon" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

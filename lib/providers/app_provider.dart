@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:golf_cart_driver/services/map_requests.dart';
@@ -49,7 +50,7 @@ class AppStateProvider with ChangeNotifier {
   SharedPreferences prefs;
 
   Location location = new Location();
-  bool hasNewRideRequest = false;
+  bool hasNewRideRequest = true;
   UserServices _userServices = UserServices();
   RideRequestModel rideRequestModel;
   RequestModelFirebase requestModelFirebase;
@@ -67,13 +68,44 @@ class AppStateProvider with ChangeNotifier {
 
   AppStateProvider() {
 //    _subscribeUser();
-    _saveDeviceToken();
-
+    String initialMessage;
+    bool _resolved = false;
+    FirebaseMessaging.instance.getInitialMessage();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      _handleNotificationData(message.data);
+      FirebaseMessaging.onMessage.listen(showFlutterNotification);
+      print('new Message Here');
     });
     _getUserLocation();
     Geolocator.getPositionStream().listen(_userCurrentLocationUpdate);
+  }
+
+  void showFlutterNotification(RemoteMessage message) {
+    AndroidNotificationChannel channel;
+    RemoteNotification notification = message.notification;
+    AndroidNotification android = message.notification?.android;
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
+    if (notification != null && android != null) {
+      flutterLocalNotificationsPlugin.show(
+        notification.hashCode,
+        notification.title,
+        notification.body,
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            channel.id,
+            channel.name,
+            channelDescription: channel.description,
+            // TODO add a proper drawable resource to android, for now using
+            //      one that already exists in example app.
+            icon: 'launch_background',
+          ),
+        ),
+      );
+    }
+  }
+
+  void receivedMessage(RemoteMessage remoteMessage) {
+    _handleNotificationData(remoteMessage.data);
   }
 
   // ANCHOR LOCATION METHODS
@@ -87,14 +119,13 @@ class AppStateProvider with ChangeNotifier {
       "id": prefs.getString("id"),
       "position": updatedPosition.toJson()
     };
-    if (distance >= 50) {
-      if (show == Show.RIDER) {
-        sendRequest(coordinates: requestModelFirebase.getCoordinates());
-      }
-      _userServices.updateUserData(values);
-      await prefs.setDouble('lat', updatedPosition.latitude);
-      await prefs.setDouble('lng', updatedPosition.longitude);
+
+    if (show == Show.RIDER) {
+      sendRequest(coordinates: requestModelFirebase.getCoordinates());
     }
+    _userServices.updateUserData(values);
+    await prefs.setDouble('lat', updatedPosition.latitude);
+    await prefs.setDouble('lng', updatedPosition.longitude);
   }
 
   _getUserLocation() async {
@@ -224,6 +255,7 @@ class AppStateProvider with ChangeNotifier {
   }
 
   _saveDeviceToken() async {
+    print('Save Token Here');
     prefs = await SharedPreferences.getInstance();
     if (prefs.getString('token') == null) {
       String deviceToken = await fcm.getToken();
@@ -231,16 +263,18 @@ class AppStateProvider with ChangeNotifier {
     }
   }
 
-  Future<void> onNewRequest() async {
-    HttpsCallable cal =
-        FirebaseFunctions.instance.httpsCallable('rideRequestNotification');
-    final response = await cal.call();
-    await _handleNotificationData(response.data);
-    print(response.data);
-  }
+  // Future<void> onNewRequest() async {
+  //   HttpsCallable cal =
+  //       FirebaseFunctions.instance.httpsCallable('rideRequestNotification');
+  //   final response = await cal.call();
+  //   await _handleNotificationData(response.data);
+  //   print(response.data);
+  // }
 
 // ANCHOR PUSH NOTIFICATION METHODS
-  Future handleOnMessage(Map<String, dynamic> data) async {}
+  Future handleOnMessage(Map<String, dynamic> data) async {
+    await _handleNotificationData(data);
+  }
 
   Future handleOnLaunch(Map<String, dynamic> data) async {
     await _handleNotificationData(data);
@@ -250,7 +284,7 @@ class AppStateProvider with ChangeNotifier {
     await _handleNotificationData(data);
   }
 
-  _handleNotificationData(Map<String, dynamic> data) async {
+  Future<void> _handleNotificationData(Map<String, dynamic> data) async {
     print('_handleNotificationData');
     hasNewRideRequest = true;
     rideRequestModel = RideRequestModel.fromMap(data['data']);
@@ -313,7 +347,7 @@ class AppStateProvider with ChangeNotifier {
   acceptRequest({String requestId, String driverId}) {
     hasNewRideRequest = false;
     _requestServices.updateRequest(
-        {"id": requestId, "status": "accepted", "driverId": driverId});
+        {"id": requestId, "status": "pending", "driverId": driverId});
     notifyListeners();
   }
 
